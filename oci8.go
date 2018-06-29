@@ -686,7 +686,7 @@ func (c *OCI8Conn) begin(ctx context.Context) (driver.Tx, error) {
 			(*C.OCIError)(c.err),
 			0,
 			c.transactionMode); // C.OCI_TRANS_SERIALIZABLE C.OCI_TRANS_READWRITE C.OCI_TRANS_READONLY
-		rv != C.OCI_SUCCESS {
+			rv != C.OCI_SUCCESS {
 			return nil, ociGetError(rv, c.err)
 		}
 	}
@@ -1931,7 +1931,14 @@ func ociGetErrorS(err unsafe.Pointer) error {
 	rv := C.WrapOCIErrorGet((*C.OCIError)(err))
 	s := C.GoString(&rv.err[0])
 	if isBadConnection(s) {
-		return driver.ErrBadConn
+		fmt.Printf("oracle code %s \n", s)
+		return errors.New(
+			fmt.Sprintf(
+				"%s, code: %s",
+				driver.ErrBadConn.Error(),
+				s[0:9],
+			),
+		)
 	}
 	return errors.New(s)
 }
