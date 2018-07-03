@@ -1932,11 +1932,16 @@ func ociGetErrorS(err unsafe.Pointer) error {
 	s := C.GoString(&rv.err[0])
 	if isBadConnection(s) {
 		return errors.Wrap(
-			fmt.Sprintf(
-				"%s, code: %s",
-				driver.ErrBadConn.Error(),
-				s[0:9],
-			),
+			func() string {
+				return errors.Wrap(
+					fmt.Sprintf(
+						"%s, code: %s",
+						driver.ErrBadConn.Error(),
+						s[0:9],
+					),
+					5,
+				).ErrorStack()
+			}(),
 			5,
 		)
 	}
