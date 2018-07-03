@@ -370,7 +370,7 @@ import "C"
 import (
 	"database/sql"
 	"database/sql/driver"
-	"errors"
+	"github.com/go-errors/errors"
 	"fmt"
 	"io"
 	"math"
@@ -1931,13 +1931,13 @@ func ociGetErrorS(err unsafe.Pointer) error {
 	rv := C.WrapOCIErrorGet((*C.OCIError)(err))
 	s := C.GoString(&rv.err[0])
 	if isBadConnection(s) {
-		fmt.Printf("oracle code %s \n", s)
-		return errors.New(
+		return errors.Wrap(
 			fmt.Sprintf(
 				"%s, code: %s",
 				driver.ErrBadConn.Error(),
 				s[0:9],
 			),
+			5,
 		)
 	}
 	return errors.New(s)
