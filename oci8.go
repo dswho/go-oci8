@@ -703,6 +703,7 @@ func (d *OCI8Driver) Open(dsnString string) (connection driver.Conn, err error) 
 	if dsn, err = ParseDSN(dsnString); err != nil {
 		return nil, err
 	}
+    fmt.Println("dsn!!!", dsn)
 
 	conn.operationMode = dsn.operationMode
 
@@ -846,8 +847,10 @@ func (d *OCI8Driver) Open(dsnString string) (connection driver.Conn, err error) 
 
 func (c *OCI8Conn) Close() error {
 	if c.closed {
+        fmt.Println("closed!!!", dsn)
 		return nil
 	}
+    fmt.Println("closing!!!", dsn)
 	c.closed = true
 
 	var err error
